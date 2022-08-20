@@ -10,6 +10,12 @@ services:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: always
 
   rabbitmq:
     image: rabbitmq
@@ -17,12 +23,11 @@ services:
     environment:
       - RABBITMQ_DEFAULT_USER=rabbitmq
       - RABBITMQ_DEFAULT_PASS=rabbitmq
+    restart: always
 
   web:
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
-    volumes:
-      - .:/erp_system
+    command: sh -c "./django-entrypoint.sh"
     ports:
       - "8000:8000"
     environment:
@@ -32,6 +37,8 @@ services:
       - RABBITMQ_USER=rabbitmq
       - RABBITMQ_PASSWORD=rabbitmq
     depends_on:
-      - db
-      - rabbitmq
+      db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_started
     restart: always
