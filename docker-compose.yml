@@ -31,9 +31,11 @@ services:
     ports:
       - "8000:8000"
     environment:
+      - POSTGRES_HOST=db
       - POSTGRES_NAME=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+      - RABBITMQ_HOST=rabbitmq
       - RABBITMQ_USER=rabbitmq
       - RABBITMQ_PASSWORD=rabbitmq
     depends_on:
