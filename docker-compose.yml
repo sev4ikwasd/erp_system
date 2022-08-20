@@ -1,8 +1,9 @@
 version: "3.9"
-   
+
 services:
   db:
     image: postgres
+    hostname: postgres
     volumes:
       - ./data/db:/var/lib/postgresql/data
     environment:
@@ -11,11 +12,11 @@ services:
       - POSTGRES_PASSWORD=postgres
 
   rabbitmq:
-    image: rabbitmq:3-management-alpine
-    container_name: 'rabbitmq'
-    volumes:
-        - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
-        - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+    image: rabbitmq
+    hostname: rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=rabbitmq
+      - RABBITMQ_DEFAULT_PASS=rabbitmq
 
   web:
     build: .
@@ -28,6 +29,9 @@ services:
       - POSTGRES_NAME=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+      - RABBITMQ_USER=rabbitmq
+      - RABBITMQ_PASSWORD=rabbitmq
     depends_on:
       - db
       - rabbitmq
+    restart: always
