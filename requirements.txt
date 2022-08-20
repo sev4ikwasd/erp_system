@@ -1,4 +1,5 @@
 django
+django-mptt
 psycopg2
 djangogrpcframework
 djangorestframework
