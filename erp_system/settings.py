@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 import os
 from pathlib import Path
+from grpc_django import GRPCService, GRPCSettings
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -35,7 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_grpc_framework',
+    'grpc_django',
     'data_handler',
 ]
 
@@ -127,3 +128,18 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# GRPC Django Framework
+# https://soheltarir.github.io/grpc-django/quickstart/#quickstart
+
+
+GRPC_SETTINGS = GRPCSettings(
+    services=[
+        GRPCService(
+            name='Controller',
+            package_name='data_handler',
+            proto_path='data_handler/data_handler.proto',
+            rpc_conf='data_handler.rpcs'
+        ),
+    ]
+)

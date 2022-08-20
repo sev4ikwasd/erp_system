@@ -1,8 +1,7 @@
-django==3.0
+django
 django-mptt
-psycopg2==2.8.6
-djangogrpcframework
+psycopg2
 djangorestframework
-grpcio
+grpc-django
 grpcio-tools
 pika
