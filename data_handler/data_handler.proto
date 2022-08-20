@@ -1,0 +1,61 @@
+syntax = "proto3";
+
+package data_handler;
+
+service Controller {
+  rpc ListCategories(CategoryListRequest) returns (stream Category) {}
+  rpc RetrieveCategory(CategoryRetrieveRequest) returns (Category) {}
+  rpc ListMeasureUnits(MeasureUnitListRequest) returns (stream MeasureUnit) {}
+  rpc RetrieveMeasureUnit(MeasureUnitRetrieveRequest) returns (MeasureUnit) {}
+  rpc ListProducts(ProductListRequest) returns (stream Product) {}
+  rpc RetrieveProduct(ProductRetrieveRequest) returns (Product) {}
+}
+
+message Category {
+  int64 id = 1;
+  string name = 2;
+  int32 lft = 3;
+  int32 rght = 4;
+  int32 tree_id = 5;
+  int32 level = 6;
+  int64 parent = 7;
+}
+
+message CategoryListRequest {
+}
+
+message CategoryRetrieveRequest {
+  int64 id = 1;
+}
+
+message MeasureUnit {
+  int64 id = 1;
+  string name = 2;
+  string full_name = 3;
+}
+
+message MeasureUnitListRequest {
+}
+
+message MeasureUnitRetrieveRequest {
+  int64 id = 1;
+}
+
+message Product {
+  int64 id = 1;
+  string code = 2;
+  string name = 3;
+  string description = 4;
+  int32 product_type = 5;
+  float rate_nds = 6;
+  bool hidden = 7;
+  int64 category = 8;
+  int64 measure_unit = 9;
+}
+
+message ProductListRequest {
+}
+
+message ProductRetrieveRequest {
+  int64 id = 1;
+}
