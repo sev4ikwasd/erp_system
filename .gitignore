@@ -82,3 +82,6 @@ venv.bak/
 *.iws
 *.iml
 *.ipr
+
+### Docker ###
+data/
