@@ -1,7 +1,10 @@
-from django_pika_pubsub import MyConsumer
+import base64
 import json
+import pika
+from django.core.management.base import BaseCommand
 from xml.etree import cElementTree as ET
-from models import MeasureUnit, Product, Category
+from data_handler.models import MeasureUnit, Product, Category
+from erp_system import settings
 
 
 def get_full_object_description(line, description):
@@ -18,6 +21,7 @@ def get_all_from_line_category(line):
     fields = ["Родитель", "Наименование"]
     full_object_description = get_full_object_description(line, fields)
 
+    print(full_object_description)
     Category.objects.create(
         parent=full_object_description[0],
         name=full_object_description[1]
@@ -61,7 +65,7 @@ root_tags = {
 def callback(channel, method, properties, body):
     payload = json.loads(body)
     erp_key = payload.get('key')
-    items = payload.get('items')
+    items = base64.b64decode(payload.get('items'))
 
     tree = ET.fromstring(items)
 
@@ -70,8 +74,23 @@ def callback(channel, method, properties, body):
         root_tags[tag_name](line)
 
 
-consumer = MyConsumer.get_consumer()
-consumer.consume(
-    routing_key='parse_queue',
-    callback=callback,
-)
+class Command(BaseCommand):
+    help = 'Consumes parsing queue'
+
+    def handle(self, *args, **options):
+        credentials = pika.PlainCredentials(settings.RABBITMQ_USERNAME, settings.RABBITMQ_PASSWORD)
+        parameters = pika.ConnectionParameters(
+            host=settings.RABBITMQ_HOST,
+            port=settings.RABBITMQ_PORT,
+            credentials=credentials,
+        )
+        connection = pika.BlockingConnection(parameters)
+        channel = connection.channel()
+        channel.queue_declare(queue='parse_queue', durable=True)
+        channel.basic_qos(prefetch_count=1)
+        channel.basic_consume(
+            queue='parse_queue',
+            on_message_callback=callback,
+        )
+        print(' [*] Waiting for messages. To exit press CTRL+C')
+        channel.start_consuming()

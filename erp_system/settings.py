@@ -37,7 +37,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'grpc_django',
-    'django_pika_pubsub',
     'data_handler',
 ]
 
@@ -86,12 +85,10 @@ DATABASES = {
 }
 
 # RabbitMQ
-PUBSUB = {
-        'RABBITMQ_USERNAME': os.getenv('RABBITMQ_USER', 'rabbitmq'),
-        'RABBITMQ_PASSWORD': os.getenv('RABBITMQ_PASSWORD', 'rabbitmq'),
-        'RABBITMQ_HOST': os.getenv('RABBITMQ_HOST', 'localhost'),
-        'RABBITMQ_PORT': int(os.getenv('RABBITMQ_PORT', 5672)),
-}
+RABBITMQ_USERNAME = os.getenv('RABBITMQ_USER', 'rabbitmq')
+RABBITMQ_PASSWORD = os.getenv('RABBITMQ_PASSWORD', 'rabbitmq')
+RABBITMQ_HOST = os.getenv('RABBITMQ_HOST', 'localhost')
+RABBITMQ_PORT = int(os.getenv('RABBITMQ_PORT', 5672))
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators

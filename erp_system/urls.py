@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from views import take_data_from_erp
+from data_handler.views import take_data_from_erp
 
 urlpatterns = [
     path('admin/', admin.site.urls),
