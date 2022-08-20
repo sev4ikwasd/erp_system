@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package product;
+
+import "google/protobuf/empty.proto";
+
+service ProductController {
+    rpc List(ProductListRequest) returns (stream Product) {}
+    rpc Retrieve(ProductRetrieveRequest) returns (Product) {}
+}
+
+message Product {
+    int64 id = 1;
+    string code = 2;
+    string name = 3;
+    string description = 4;
+    int32 product_type = 5;
+    float rate_nds = 6;
+    bool hidden = 7;
+    int64 category = 8;
+    int64 measure_unit = 9;
+}
+
+message ProductListRequest {
+}
+
+message ProductRetrieveRequest {
+    int64 id = 1;
+}
