@@ -5,3 +5,4 @@ djangorestframework
 grpc-django
 grpcio-tools
 pika
+django-pika-pubsub
