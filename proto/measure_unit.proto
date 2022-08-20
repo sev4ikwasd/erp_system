@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package measure_unit;
+
+import "google/protobuf/empty.proto";
+
+service MeasureUnitController {
+    rpc List(MeasureUnitListRequest) returns (stream MeasureUnit) {}
+    rpc Retrieve(MeasureUnitRetrieveRequest) returns (MeasureUnit) {}
+}
+
+message MeasureUnit {
+    int64 id = 1;
+    string name = 2;
+    string full_name = 3;
+}
+
+message MeasureUnitListRequest {
+}
+
+message MeasureUnitRetrieveRequest {
+    int64 id = 1;
+}

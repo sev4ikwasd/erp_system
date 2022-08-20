@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package category;
+
+import "google/protobuf/empty.proto";
+
+service CategoryController {
+    rpc List(CategoryListRequest) returns (stream Category) {}
+    rpc Retrieve(CategoryRetrieveRequest) returns (Category) {}
+}
+
+message Category {
+    int64 id = 1;
+    string name = 2;
+    int32 lft = 3;
+    int32 rght = 4;
+    int32 tree_id = 5;
+    int32 level = 6;
+    int64 parent = 7;
+}
+
+message CategoryListRequest {
+}
+
+message CategoryRetrieveRequest {
+    int64 id = 1;
+}

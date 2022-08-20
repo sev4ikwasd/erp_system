@@ -16,6 +16,15 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from proto import category_pb2_grpc, measure_unit_pb2_grpc, product_pb2_grpc
+from data_handler.services import CategoryService, MeasureUnitService, ProductService
+
 urlpatterns = [
     path('admin/', admin.site.urls),
 ]
+
+
+def grpc_handlers(server):
+    category_pb2_grpc.add_CategoryControllerServicer_to_server(CategoryService.as_servicer(), server)
+    measure_unit_pb2_grpc.add_MeasureUnitControllerServicer_to_server(MeasureUnitService.as_servicer(), server)
+    product_pb2_grpc.add_ProductControllerServicer_to_server(ProductService.as_servicer(), server)
