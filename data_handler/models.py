@@ -7,7 +7,7 @@ from mptt.models import MPTTModel
 
 class Category(MPTTModel):
     parent = models.ForeignKey('self', blank=True, null=True, verbose_name=l_('Родительская категория'),
-                               related_name='child')
+                               related_name='child', on_delete=models.SET_NULL)
     name = models.CharField(max_length=550)
 
     class Meta:
