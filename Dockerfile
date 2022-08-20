@@ -6,3 +6,4 @@ ENV PYTHONUNBUFFERED=1
 WORKDIR /erp_system
 COPY . .
 RUN pip install -r ./requirements.txt
+RUN chmod +x ./django-entrypoint.sh
