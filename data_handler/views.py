@@ -1,7 +1,10 @@
+from django.views.decorators.csrf import csrf_exempt
 from grpc_django.views import RetrieveGRPCView, ServerStreamGRPCView
 from data_handler.models import Category, MeasureUnit, Product
 from data_handler.serializers import CategorySerializer, MeasureUnitSerializer, ProductSerializer
 from grpc_codegen.data_handler_pb2 import Category as CategoryProto, MeasureUnit as MeasureUnitProto, Product as ProductProto
+from django.http import HttpResponse
+from data_handler.producer import produce_parse_task
 
 
 class RetrieveCategory(RetrieveGRPCView):
@@ -38,3 +41,10 @@ class ListProducts(ServerStreamGRPCView):
     queryset = Product.objects.all()
     response_proto = ProductProto
     serializer_class = ProductSerializer
+
+
+@csrf_exempt
+def take_data_from_erp(request, slug):
+    data = request.body.decode()
+    produce_parse_task(slug, data)
+    return HttpResponse(content="", status=200)

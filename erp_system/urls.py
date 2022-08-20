@@ -16,6 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from data_handler.views import take_data_from_erp
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('push-data/<slug:slug>/', take_data_from_erp, name="take_data_from_erp")
 ]
