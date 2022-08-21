@@ -10,12 +10,6 @@ from erp_system import settings
 
 
 def get_full_object_description(line, description):
-    # full_object_description = [None] * len(description)
-    # for i, field in enumerate(description):
-    #     print(i, field)
-    #     found_line = line.find(field)
-    #     full_object_description[i] = None if found_line is None else found_line.text
-
     full_object_description = []
 
     for element in line:
@@ -27,7 +21,7 @@ def get_full_object_description(line, description):
 
 def get_or_none(classmodel, **kwargs):
     obj = classmodel.objects.filter(**kwargs)
-    return obj.first() if obj.count == 1 else None
+    return obj.first() if obj.count() == 1 else None
 
 
 def get_all_from_line_category(line):
@@ -42,30 +36,31 @@ def get_all_from_line_category(line):
 
 
 def get_all_from_line_product(line):
-    fields = ["Ссылка", "Родитель", "Артикул", "Наименование", "Описание", "ТипНоменклатуры", "СтавкаНДС",
-              "ЕдиницаХраненияОстатков", "ПометкаУдаления"]
+    fields = ["Ссылка", "Родитель", "ПометкаУдаления", "Артикул", "Наименование", "СтавкаНДС", "Описание",
+              "ЕдиницаХраненияОстатков", "ТипНоменклатуры"]
     full_object_description = get_full_object_description(line, fields)
 
     Product.objects.create(
         link=uuid.UUID(full_object_description[0]),
         category=get_or_none(Category, link=full_object_description[1]),
-        code=full_object_description[2],
-        name=full_object_description[3],
-        description=full_object_description[4],
-        product_type=Product.TYPES(full_object_description[5]),
-        rate_nds=full_object_description[6],
+        code=full_object_description[3],
+        name=full_object_description[4],
+        description=full_object_description[6],
+        product_type=0 if full_object_description[8] == "Товар" else 1,
+        rate_nds=int(full_object_description[5][:-1]),
         measure_unit=get_or_none(MeasureUnit, link=full_object_description[7]),
-        hidden=full_object_description[7]
+        hidden=full_object_description[2]
     )
 
 
 def get_all_from_line_unit(line):
-    fields = ["Ссылка", "Наименование", "НаименованиеПолное"]
+    line = line[0]
+    fields = ["Наименование", "Ссылка", "НаименованиеПолное"]
     full_object_description = get_full_object_description(line, fields)
 
     MeasureUnit.objects.create(
-        link=uuid.UUID(full_object_description[0]),
-        name=full_object_description[1],
+        link=uuid.UUID(full_object_description[1]),
+        name=full_object_description[0],
         full_name=full_object_description[2]
     )
 
@@ -81,6 +76,11 @@ def callback(channel, method, properties, body):
     payload = json.loads(body)
     erp_key = payload.get('key')
     items = base64.b64decode(payload.get('items')).decode('utf-8')
+
+    print("purging")
+    Category.objects.all().delete()
+    MeasureUnit.objects.all().delete()
+    Product.objects.all().delete()
 
     tree = ET.fromstring(items)
 
@@ -106,6 +106,7 @@ class Command(BaseCommand):
         channel.basic_consume(
             queue='parse_queue',
             on_message_callback=callback,
+            auto_ack=True,
         )
         print(' [*] Waiting for messages. To exit press CTRL+C')
         channel.start_consuming()
