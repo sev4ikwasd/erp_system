@@ -1,3 +1,5 @@
+import uuid
+
 from django.db import models
 from django.utils.translation import gettext_lazy as l_
 
@@ -6,6 +8,7 @@ from mptt.models import MPTTModel
 
 
 class Category(MPTTModel):
+    link = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
     parent = models.ForeignKey('self', blank=True, null=True, verbose_name=l_('Родительская категория'),
                                related_name='child', on_delete=models.SET_NULL)
     name = models.CharField(max_length=550)
@@ -16,6 +19,7 @@ class Category(MPTTModel):
 
 
 class MeasureUnit(models.Model):
+    link = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
     name = models.CharField(max_length=255, verbose_name=l_('Название'))
     full_name = models.CharField(max_length=255, blank=True, default='', verbose_name=l_('Полное название'))
 
@@ -33,6 +37,7 @@ class Product(models.Model):
         (SERVICE, l_('Услуга')),
     )
 
+    link = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
     category = TreeForeignKey(Category, null=True, blank=True, related_name='products',
                               on_delete=models.SET_NULL, verbose_name=l_('Категория'))
     code = models.CharField(max_length=255, verbose_name=l_('Артикул'), blank=True, null=True, default='')

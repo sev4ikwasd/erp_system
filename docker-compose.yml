@@ -11,7 +11,7 @@ services:
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_PASSWORD=admin
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 5s
@@ -37,7 +37,7 @@ services:
       - POSTGRES_HOST=db
       - POSTGRES_NAME=postgres
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_PASSWORD=admin
       - RABBITMQ_HOST=rabbitmq
       - RABBITMQ_USER=rabbitmq
       - RABBITMQ_PASSWORD=rabbitmq
