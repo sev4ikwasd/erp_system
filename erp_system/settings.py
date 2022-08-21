@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'grpc_django',
+    'mptt',
     'data_handler',
 ]
 
